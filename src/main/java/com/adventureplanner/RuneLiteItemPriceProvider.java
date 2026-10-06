@@ -22,7 +22,7 @@ final class RuneLiteItemPriceProvider implements ItemPriceProvider
         String key = itemName.toLowerCase();
         Integer cached = cache.get(key);
         if (cached != null) return cached;
-        int price = 0;
+        long price = 0;
         try
         {
             List<ItemPrice> matches = itemManager.search(itemName);
@@ -39,7 +39,8 @@ final class RuneLiteItemPriceProvider implements ItemPriceProvider
         {
             price = 0;
         }
-        cache.put(key, Math.max(0, price));
-        return Math.max(0, price);
+        int safePrice = (int) Math.min(Integer.MAX_VALUE, Math.max(0L, price));
+        cache.put(key, safePrice);
+        return safePrice;
     }
 }
